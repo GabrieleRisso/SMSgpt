@@ -67,7 +67,8 @@ Recive a message with the chatGPT reply
 # REAL WORLD USE:
 Remove/comment the line: ```counter=$((counter+1))```
 
-This allows remote clients to contact your phone number and receive chatGPT reply messages on their phone over the GSM network.
+This allows remote clients to text your phone number and receive chatGPT reply messages on their phone over the GSM network.
+All possible phone clients are natively supported: Android (Google), iOS (Apple), Windows Phone (Microsoft), BlackBerry OS (BlackBerry), Symbian (Nokia).
 
 ## Limitation and bugs:
 ```
@@ -78,6 +79,7 @@ This allows remote clients to contact your phone number and receive chatGPT repl
 ```
 
 ## Leave a star if you enjoy this
-### credits due to shell-gpt: https://github.com/TheR1D/shell_gpt
+
+#### credits due to shell-gpt: https://github.com/TheR1D/shell_gpt
 
  
