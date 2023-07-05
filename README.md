@@ -12,7 +12,8 @@ The new message is then sent as a reply to the client phone number.
 ## How to setup
 #### PC:
 Open a BASH terminal
-Download and start docker (used for GPT queries over shellGPT): ```sudo systemctl start docker.service```
+
+Download sgpt (used to talk to chatGPT): ```pip install shell-gpt```
 
 Set your open-ai api key: ```export OPENAI_API_KEY="sk-BQfU50xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"```
 
@@ -77,3 +78,6 @@ This allows remote clients to contact your phone number and receive chatGPT repl
 ```
 
 ## Leave a star if you enjoy this
+### credits due to shell-gpt: https://github.com/TheR1D/shell_gpt
+
+ 
