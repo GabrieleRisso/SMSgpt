@@ -58,9 +58,15 @@ L: 546
 Recive a message with the chatGPT reply
 ```
 
+# REAL WORLD USE:
+Remove/comment the line: ```counter=$((counter+1))```
+
+This allows remote clientes to contact your phone number and recive chatGPT reply messages on their phone over GSM network.
+
 ## Limitation and bugs:
 ```
-. Smss are limited to 160 chars. For now I'm limiting individual SMS to that lenght
+. Smss are limited to 160 chars. For now I'm limiting individual SMS to that lenght and not splitting them.
 . A message is not sent when the body contains special chars, like emoji or strenge char.
+. real word use: the reply sms from the server to the client is not displayed on server SMS messaging app.
 ```
 
