@@ -32,7 +32,12 @@ Check if adb is working after pairing: ```adb devices``` must be in DEVICE mode.
 
 
 # How to use
-Start script in bash terminal: ./sms.sh
+
+#### There are two modes: real world use and chat with yourself 
+
+## chat with yourself :
+
+Start script in bash terminal: ./smsgpt.sh
 
 On the phone, to test it, go to message SMS app and text yourself with a question.
 
@@ -63,9 +68,11 @@ Remove/comment the line: ```counter=$((counter+1))```
 
 This allows remote clientes to contact your phone number and recive chatGPT reply messages on their phone over GSM network.
 
+
 ## Limitation and bugs:
 ```
-. Smss are limited to 160 chars. For now I'm limiting individual SMS to that lenght and not splitting them.
+. One message at the time is supportd, the programs trips if there are more the ONE message. it starts talking to itself...
+. SMSs are limited to 160 chars. For now I'm limiting individual SMS to that lenght and not splitting them.
 . A message is not sent when the body contains special chars, like emoji or strenge char.
 . real word use: the reply sms from the server to the client is not displayed on server SMS messaging app.
 ```
