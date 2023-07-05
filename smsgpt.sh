@@ -4,11 +4,6 @@
 # Tested on Arch-linux and Google Pixel 6 with Andorid 13
 
 
-
-
-#start docker
-#sudo systemctl start docker.service 
-
 #YOU MUST export open-ai api key
 #export OPENAI_API_KEY="sk-BQfU5xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
@@ -17,12 +12,6 @@
 
 #for adb wired just connect your phone. must be in device mode
 #adb devices
-
-#Use docker to query chatgpt
-sgpt() { 
-	docker run --rm --env OPENAI_API_KEY --volume gpt-cache:/tmp/shell_gpt ghcr.io/ther1d/shell_gpt "$1"
-	}
-
 
 
 echo "{OK} STARTED.  Waiting for new incoming messages"
@@ -50,7 +39,7 @@ while true; do
 	echo "{body}: $body"
 	
 	#ask chatgpt 
-	rep="$(sgpt "$body .Reply without markdown, special chars, punctuation or emoji in a maximum of 115 chars" | sed 's/ /\\ /g' | sed "s/'/\\\'/g" )"
+	rep="$(sgpt "$body ? Reply without markdown, special chars, punctuation or emoji in a maximum of 115 chars" | sed 's/ /\\ /g' | sed "s/'/\\\'/g" )"
 	
 	echo "{rep}: $rep"
 	
@@ -62,6 +51,8 @@ while true; do
 
 	#update counters
     counter=$new_counter
+
+	#remove this line if you wnant to use it with other GSM clients other then yourself 
 	counter=$((counter+1))
 
 	echo "{...} Waiting for new incoming messages"
