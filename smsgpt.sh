@@ -1,80 +1,80 @@
-sudo systemctl start docker.service 
-alias sgpt="docker run --rm --env OPENAI_API_KEY --volume gpt-cache:/tmp/shell_gpt ghcr.io/ther1d/shell_gpt"
+# Author: Gabriele Risso  License: MIT
+# SMSgpt: https://github.com/GabrieleRisso/SMSgpt/tree/main
+# POC of a phone used as SMS gateway to serve queries to chatGPT over GSM network using the regular Android message app.
+# Tested on Arch-linux and Google Pixel 6 with Andorid 13
+
+
+
+
+#start docker
+#sudo systemctl start docker.service 
+
+#YOU MUST export open-ai api key
+#export OPENAI_API_KEY="sk-BQfU5xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
 #for wireless adb
-#adb connect 192.168.1.77
+#adb connect 192.168.1.55
+
+#for adb wired just connect your phone. must be in device mode
+#adb devices
+
+#Use docker to query chatgpt
+sgpt() { 
+	docker run --rm --env OPENAI_API_KEY --volume gpt-cache:/tmp/shell_gpt ghcr.io/ther1d/shell_gpt "$1"
+	}
 
 
-#test="$( echo "dove si torva la vergine dei cristiani ?" | sed 's/ /\\ /g' | sed "s/'/\\\'/g" ) "
 
-#echo $test
-
-#invia SMS
-#adb shell service call isms 5 i32 0 s16 "com.android.mms.service" s16 "null" s16 "+393455049699" s16 "null" s16 ${test} s16 "null" s16 "null" i32 0 i64 0
-# ciao
-# come faccio a diventare maggiorenne?
-
-#ricevi SMS
-#adb shell 'content query --uri content://sms/inbox --projection date,address,body --sort "date ASC"' | tail -n 10
-#estraggo sms --> sgpt
-
-#mittente: address: +393455049699
-#addr="$(adb shell 'content query --uri content://sms/inbox --projection date,address,body --sort "date ASC"' | tail -n 1 | awk '{print $4}' | cut -d'=' -f2- | sed 's/,$//')"
-
-#messaggio del mittente: body: come faccio a divetare bello?
-#body="$(adb shell 'content query --uri content://sms/inbox --projection date,address,body --sort "date ASC"' | tail -n 1 | grep -oP '(?<=body=).*' )"
+echo "{OK} STARTED.  Waiting for new incoming messages"
+echo "{L?} is ID of the last message. it's normal"
 
 counter=$(adb shell 'content query --uri content://sms/inbox --projection address,body --sort "date ASC"'  | sed '/^$/d' | tail -n 1 | awk '{print $2}' | cut -d'=' -f2- | sed 's/,$//')
-#counter=$((counter+1))
 
 while true; do
   new_counter=$(adb shell 'content query --uri content://sms/inbox --projection address,body --sort "date ASC"' | sed '/^$/d' | tail -n 1 | awk '{print $2}' | cut -d'=' -f2- | sed 's/,$//')  
   echo "L: $new_counter"
+  
 
   #command to get the actual counter value
 
   if ((new_counter > counter)); then
-    	#mittente: address: +393455049699
-	addr="$(adb shell 'content query --uri content://sms/inbox --projection date,address,body --sort "date ASC"' | sed '/^$/d' | tail -n 1 | awk '{print $4}' | cut -d'=' -f2- | sed 's/,$//')"
-	echo "C: $counter"
-	#messaggio del mittente: body: come faccio a divetare bello?
-	body="$(adb shell 'content query --uri content://sms/inbox --projection date,address,body --sort "date ASC"' | sed '/^$/d' | tail -n 1 | grep -oP '(?<=body=).*' )"
-	echo "body: $body"
-	#chiedo a gpt una risposta
-	rep="$(sgpt " ${body} Rispondi in maniera solare e incalzante con un massimo di 115 caratteri" | sed 's/ /\\ /g' | sed "s/'/\\\'/g" )"
-	
-	#file="tempfile.txt" 
 
-	#cat <<EOF > "$file"
-	#$rep
-	#EOF
+	#find the last recived message, and grep only the adress of it.
+	addr="$(adb shell 'content query --uri content://sms/inbox --projection date,address,body --sort "date ASC"' | sed '/^$/d' | tail -n 1 | awk '{print $4}' | cut -d'=' -f2- | sed 's/,$//')"
 	
-	#repf=$(python strip.py $file)
-	echo "rep: $rep"
+ 	echo "{+++} Message recived form $addr:"
 	
-	#rispondo con un SMS
+	#find the last recived message, and grep only the body of it.
+	body="$(adb shell 'content query --uri content://sms/inbox --projection date,address,body --sort "date ASC"' | sed '/^$/d' | tail -n 1 | grep -oP '(?<=body=).*' )"
+	
+	echo "{body}: $body"
+	
+	#ask chatgpt 
+	rep="$(sgpt "$body .Reply without markdown, special chars, punctuation or emoji in a maximum of 115 chars" | sed 's/ /\\ /g' | sed "s/'/\\\'/g" )"
+	
+	echo "{rep}: $rep"
+	
+	#replay with SMS
 	adb shell service call isms 5 i32 0 s16 "com.android.mms.service" s16 "null" s16 "${addr}" s16 "null" s16 ${rep} s16 "null" s16 "null" i32 0 i64 0
 
-    	counter=$new_counter
-	counter=$((counter+1))
-        echo "C sending: $counter"
+    echo "{!!!} Sending message to $addr"
+	#echo "C: $counter"
 
+	#update counters
+    counter=$new_counter
+	counter=$((counter+1))
+
+	echo "{...} Waiting for new incoming messages"
 
   fi
 
   sleep 1
+
 done
-
-#chiedo a gpt una risposta
-#rep="$(sgpt " ${body} Rispondi con un massimo di 115 caratteri" | sed 's/ /\\ /g' | sed "s/'/\\\'/g" )"
-
-#echo $rep
-#rispondo con un SMS
-#adb shell service call isms 5 i32 0 s16 "com.android.mms.service" s16 "null" s16 "${addr}" s16 "null" s16 ${rep} s16 "null" s16 "null" i32 0 i64 0
 
 
 #---------------
-#metodo dimmerda
-#adb shell am start -a android.intent.action.SENDTO -d sms:+393455049699 --es sms_body "$txt" --ez exit_on_sent false;
+#HACKY way of sending sms;
+#adb shell am start -a android.intent.action.SENDTO -d sms:+39xxxxxxxxx --es sms_body "$txt" --ez exit_on_sent false;
 #sleep 1;
 #adb shell input keyevent 22 && adb shell input keyevent 22 && adb shell input keyevent 23;
