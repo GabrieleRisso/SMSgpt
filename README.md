@@ -4,9 +4,10 @@ POC of a phone used as SMS gateway to serve queries to chatGPT over GSM network 
 #### Tested on Arch-linux and Google Pixel 6 with Andorid 13
 
 ## How it work
-Android Debug Bridge aka "adb" connection is created, either wired or wireless, from comupter to phone. 
-smsgpt listen for new incoming messages on the phone, check the body of the last message and query chatgpt.
-The new message is then sent as a reply to the "asking" phone number.
+
+Android Debug Bridge aka "adb" connection is created, either wired or wireless, from computer to phone.
+smsgpt listen for new incoming messages on the phone, checks the body of the last message and queries ChatGPT.
+The new message is then sent as a reply to the client phone number.
 
 ## How to setup
 #### PC:
@@ -30,16 +31,15 @@ Check if adb is working after pairing: ```adb devices``` must be in DEVICE mode.
 
 (Recommended) Connect to wireless abd: ```abd connect IP-addr-of-the-phone```
 
-
 # How to use
 
-#### There are two modes: real world use and chat with yourself 
+#### There are two modes: real world use and chat with yourself
 
 ## chat with yourself :
 
 Start script in bash terminal: ./smsgpt.sh
 
-On the phone, to test it, go to message SMS app and text yourself with a question.
+On the phone, to test it, go to the message SMS app and text yourself with a question.
 
 ### Expected terminal output:
 ```
@@ -48,10 +48,10 @@ L: 544
 L: 544
 L: 545
 {+++} Message recived:
-body: Where is the money ? 
-rep: 
+body: Where is the money ?
+rep:
 The\ money\ is\ in\ banks,\ investments,\ and\ people\'s\ wallets,\ both\ physically\ and\ digitally.
-Result: Parcel(00000000    '....')
+Result: Parcel(00000000 '....')
 C: 546
 {...} Waiting for new incoming messages
 L: 546
@@ -66,14 +66,14 @@ Recive a message with the chatGPT reply
 # REAL WORLD USE:
 Remove/comment the line: ```counter=$((counter+1))```
 
-This allows remote clientes to contact your phone number and recive chatGPT reply messages on their phone over GSM network.
-
+This allows remote clients to contact your phone number and receive chatGPT reply messages on their phone over the GSM network.
 
 ## Limitation and bugs:
 ```
-. One message at the time is supportd, the programs trips if there are more the ONE message. it starts talking to itself...
+. Only one message at the time is supported, it trips if there are more the one message. it starts talking to itself...
 . SMSs are limited to 160 chars. For now I'm limiting individual SMS to that lenght and not splitting them.
-. A message is not sent when the body contains special chars, like emoji or strenge char.
-. real word use: the reply sms from the server to the client is not displayed on server SMS messaging app.
+. A message is not sent when the body contains special chars, like emoji or strange char.
+. Real word use mode issue: the reply SMS sent from the server to the client is not displayed on server SMS messaging app, only in the console and client message app.
 ```
 
+## Leave a star if you enjoy this
