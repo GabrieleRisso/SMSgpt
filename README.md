@@ -32,7 +32,11 @@ In developer settings activate:
 - Connect to wireless abd: ```abd connect IP-addr-of-the-phone``` (Recommended) 
 
 
-# Use: ./smsgpt.sh
+# Use: 
+
+- fix permission ```chmod +x smsgpt.sh```
+- run ```./smsgpt.sh```
+- install ```echo "alias smsgpt=\"$PWD/smsgpt.sh\"" >> $HOME/.bashrc && source $HOME/.bashrc ```
 
 #### There are two modes: ```gateway``` and ```chat with yourself```
 
@@ -41,8 +45,6 @@ In developer settings activate:
     --> PC(Server) --- USB adb --> Phone1 ---\                                
                \---- WIFI adb --> Phone1 ------> GSM Network --> PC(Server) -->
                     {3-500 m}                   {loopback}
-
-Start script in bash terminal: ```./smsgpt.sh```
 
 On the phone, to test it, go to the message SMS app and text yourself with a question.
 
@@ -81,12 +83,10 @@ This allows remote clients to text your phone number and receive chatGPT reply m
 All possible phone clients are natively supported: Android (Google), iOS (Apple), Windows Phone (Microsoft), BlackBerry OS (BlackBerry), Symbian (Nokia).
 
 
-
     PC(Server) --- USB adb --> Phone1
             \---- WIFI adb --> Phone1 --> GSM Network --> Phone2(Client)
                   {3-500 m}              {long range}
                    
-
 
 ## Limitation and bugs:
 ```
