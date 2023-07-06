@@ -10,34 +10,33 @@ Android Debug Bridge aka  ```adb``` connection is created, either wired or wirel
 The new message is then sent as a response to the client phone number.
 
 ## How to setup
-#### PC:
-Open a BASH terminal
+#### SERVER
 
-Download sgpt (used to communicate to chatGPT): ```pip install shell-gpt```
+-    Download sgpt (used to communicate to chatGPT): ```pip install shell-gpt```
 
-Set your open-ai api key: ```export OPENAI_API_KEY="sk-BQfU50xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"```
+-    Set your open-ai api key: ```export OPENAI_API_KEY="sk-BQfU50xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"```
 
-Download adb and test it with: ```adb --version``` 
+- Download adb and test it with: ```adb --version``` 
 
-#### PHONE:
-No root is required.
+#### PHONE1 (No root is required)
+
 In developer settings activate:
 
-ABD wired connection: ```debug usb ON```
+- ABD wired connection:        ```debug usb ON```
 
-(Recommended) ABD wireless connection: ```wireless debug ON```
+- ABD wireless connection:     ```wireless debug ON```
 
-#### (optional) PC:
-Check if adb is working after pairing: ```adb devices``` must be in DEVICE mode.
+#### PC connect
+- Check if adb is working after pairing: ```adb devices``` must be in device mode.
 
-(Recommended) Connect to wireless abd: ```abd connect IP-addr-of-the-phone```
+- Connect to wireless abd: ```abd connect IP-addr-of-the-phone``` (Recommended) 
 
 
 # How to use: ./smsgpt.sh
 
-#### There are two modes: real world use and chat with yourself
+#### There are two modes: ```gateway``` and ```chat with yourself```
 
-## chat with yourself :
+## chat with yourself mode:
 
     --> PC(Server) --- USB adb --> Phone1 ---\                                
                \---- WIFI adb --> Phone1 ------> GSM Network --> PC(Server) -->
@@ -50,26 +49,33 @@ On the phone, to test it, go to the message SMS app and text yourself with a que
 ### Expected terminal output:
 ```
 {OK} STARTED.  Waiting for new incoming messages
-{L?} is ID of the last message. it's normal
-L: 650
-L: 651
-{+++} Message recived form +33XXXXXXXXXX
-{body}: Where is the money ?
-{rep}: The\ money\ is\ in\ banks,\ investments,\ and\ people\'s\ wallets,\ both\ physically\ and\ digitally.
-Result: Parcel(00000000    '....')
-{!!!} Sending message to +33XXXXXXXXXX
+{L?} is Id of the last message.
+1668
+1668
+1670
+
+{<--} Incoming message N^1668 form +33XXXXXXXXXX
+{type}:		inbound
+{body}:		Math or chocolate?
+
+{-->} Sending message to +33XXXXXXXXXX
+{type}:		outbound
+{body}:		Math or chocolate? Well, that's a tough choice. I guess it depends on whether you prefer numbers or sweetness.
+
 {...} Waiting for new incoming messages
-L: 652
-L: 652
-L: 652
+Result: Parcel(00000000    '....')
+1670
+1670
+1670
+
 ```
 ### On the phone:
 ```
 Receive a SMS message with the chatGPT reply as its body
 ```
 
-# REAL WORLD USE:
-Activate with: Remove/comment the line: ```counter=$((counter+1))```
+# gateway mode:
+Activate with: remove/comment the line: ```counter=$((counter+1))```
 
 This allows remote clients to text your phone number and receive chatGPT reply messages on their phone over the GSM network.
 All possible phone clients are natively supported: Android (Google), iOS (Apple), Windows Phone (Microsoft), BlackBerry OS (BlackBerry), Symbian (Nokia).
@@ -84,8 +90,8 @@ All possible phone clients are natively supported: Android (Google), iOS (Apple)
 
 ## Limitation and bugs:
 ```
-. Only one message at the time is supported, it trips if there are more the one message. it starts talking to itself.
-. SMSs are limited to 160 chars. For now I'm limiting individual SMS to that lenght and not splitting them.
+. Only one message at the time is supported.
+. SMSs are limited to 160 chars. For now I'm limiting individual SMS to that lenght and not splitting them. SMS concatenation is possible.
 . A message is not sent when the body contains special chars, like emoji or strange char.
 . Real word use mode issue: the reply SMS sent from the server to the client is not displayed on server SMS messaging app, only in the console and client message app.
 ```
