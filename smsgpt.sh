@@ -15,7 +15,7 @@
 
 
 echo "{OK} STARTED.  Waiting for new incoming messages"
-echo "{L?} is ID of the last message. it's normal"
+echo "{L?} is Row of the last message. time "
 
 counter=$(adb shell 'content query --uri content://sms/inbox --projection address,body --sort "date ASC"'  | sed '/^$/d' | tail -n 1 | awk '{print $2}' | cut -d'=' -f2- | sed 's/,$//')
 
@@ -26,29 +26,43 @@ while true; do
 
   #command to get the actual counter value
   if ((new_counter > counter)); then
+	
+ 	record="$(adb shell 'content query --uri content://sms/inbox --projection _id,date,address,body --sort "date ASC"' | sed '/^$/d' | tail -n 1 )"
+       	
+	#find the last message, and grep only the adress of it.
+        addr="$(echo $record | awk '{print $5}' | cut -d'=' -f2- | sed 's/,$//')" 	
+        
+	#find the last recived message, and grep only the body of it.
+        body="$(echo $record | grep -oP '(?<=body=).*' )" 
 
-	#find the last  message, and grep only the adress of it.
-	addr="$(adb shell 'content query --uri content://sms/inbox --projection date,address,body --sort "date ASC"' | sed '/^$/d' | tail -n 1 | awk '{print $4}' | cut -d'=' -f2- | sed 's/,$//')"
-	
- 	echo "{+++} Message recived form $addr:"
-	
-	#find the last  message, and grep only the body of it.
-	body="$(adb shell 'content query --uri content://sms/inbox --projection date,address,body --sort "date ASC"' | sed '/^$/d' | tail -n 1 | grep -oP '(?<=body=).*' )"
-	
-	echo "{body}: $body"
-	
-	#ask chatgpt 
-	rep="$(sgpt "$body ? Reply without markdown, special chars, punctuation or emoji in a maximum of 115 chars" | sed 's/ /\\ /g' | sed "s/'/\\\'/g" )"
-	
-	echo "{rep}: $rep"
-	
-	#replay with SMS
-	adb shell service call isms 5 i32 0 s16 "com.android.mms.service" s16 "null" s16 "${addr}" s16 "null" s16 ${rep} s16 "null" s16 "null" i32 0 i64 0
+ 	#disable loopback
+        if [ "$old_rep" != "$body" ]; then
+            
+            echo ""
+            echo "{<--} Incoming message N^$id form $addr"
+            echo "{type}:		inbound"
+            echo "{body}:		$body"
+            echo ""
+            
+            #generate chatgpt reply
+            raw_rep="$(sgpt "question: \"$body\" . Pretend to be a chat bot and engage into a conversation. Reply without using markdown, special chars, punctuation or emoji in a maximum of 115 chars.")"
+            rep=$(echo $raw_rep | sed 's/ /\\ /g' | sed "s/'/\\\'/g" )
+            
+            #debug send
+            echo ""
+            echo "{-->} Sending message to $addr"
+            echo "{type}:		outbound"
+            echo "{body}:		$raw_rep"
+            echo ""
+            #adb send SMS to $addr with content $rep
+            adb shell service call isms 5 i32 0 s16 "com.android.mms.service" s16 "null" s16 "${addr}" s16 "null" s16 ${rep} s16 "null" s16 "null" i32 0 i64 0 &
+        else
+            echo "{XXX} Duplicate because of mode: chat with yourself, skipping"
+        fi
 
-    	echo "{!!!} Sending message to $addr"
-	#echo "C: $counter"
-
-	#update counters
+	#save last reply for 
+ 	old_rep=$raw_rep
+ 	#update counter
     	counter=$new_counter
 
 	#remove this line if you wnant to use it with other GSM clients other then yourself 
@@ -58,7 +72,7 @@ while true; do
 
   fi
 
-  sleep 1
+  #sleep 1
 
 done
 
