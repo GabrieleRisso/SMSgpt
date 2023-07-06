@@ -10,7 +10,7 @@ Android Debug Bridge aka  ```adb``` connection is created, either wired or wirel
 The new message is then sent as a response to the client phone number.
 
 ## How to setup
-#### SERVER
+#### Server
 
 -    Download sgpt (used to communicate to chatGPT): ```pip install shell-gpt```
 
@@ -18,7 +18,7 @@ The new message is then sent as a response to the client phone number.
 
 - Download adb and test it with: ```adb --version``` 
 
-#### PHONE1 (No root is required)
+#### Phone1 (No root is required)
 
 In developer settings activate:
 
@@ -26,13 +26,13 @@ In developer settings activate:
 
 - ABD wireless connection:     ```wireless debug ON```
 
-#### PC connect
+#### Server-Phone connect
 - Check if adb is working after pairing: ```adb devices``` must be in device mode.
 
 - Connect to wireless abd: ```abd connect IP-addr-of-the-phone``` (Recommended) 
 
 
-# How to use: ./smsgpt.sh
+# Use: ./smsgpt.sh
 
 #### There are two modes: ```gateway``` and ```chat with yourself```
 
