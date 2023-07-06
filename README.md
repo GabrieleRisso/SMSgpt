@@ -49,24 +49,23 @@ On the phone, to test it, go to the message SMS app and text yourself with a que
 
 ### Expected terminal output:
 ```
+{OK} STARTED.  Waiting for new incoming messages
+{L?} is ID of the last message. it's normal
+L: 650
+L: 651
+{+++} Message recived form +33XXXXXXXXXX
+{body}: Where is the money ?
+{rep}: The\ money\ is\ in\ banks,\ investments,\ and\ people\'s\ wallets,\ both\ physically\ and\ digitally.
+Result: Parcel(00000000    '....')
+{!!!} Sending message to +33XXXXXXXXXX
 {...} Waiting for new incoming messages
-L: 544
-L: 544
-L: 545
-{+++} Message recived:
-body: Where is the money ?
-rep:
-The\ money\ is\ in\ banks,\ investments,\ and\ people\'s\ wallets,\ both\ physically\ and\ digitally.
-Result: Parcel(00000000 '....')
-C: 546
-{...} Waiting for new incoming messages
-L: 546
-L: 546
-L: 546
+L: 652
+L: 652
+L: 652
 ```
 ### On the phone:
 ```
-Recive a message with the chatGPT reply
+Receive a SMS message with the chatGPT reply as its body
 ```
 
 # REAL WORLD USE:
