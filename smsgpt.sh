@@ -29,10 +29,10 @@ while true; do
 	
  	record="$(adb shell 'content query --uri content://sms/inbox --projection _id,date,address,body --sort "date ASC"' | sed '/^$/d' | tail -n 1 )"
        	
-	#find the last message, and grep only the adress of it.
+	#find the last message, and grep only the address of it.
         addr="$(echo $record | awk '{print $5}' | cut -d'=' -f2- | sed 's/,$//')" 	
         
-	#find the last recived message, and grep only the body of it.
+	#find the last received message, and grep only the body of it.
         body="$(echo $record | grep -oP '(?<=body=).*' )" 
 
  	#disable loopback
@@ -57,7 +57,7 @@ while true; do
             #adb send SMS to $addr with content $rep
             adb shell service call isms 5 i32 0 s16 "com.android.mms.service" s16 "null" s16 "${addr}" s16 "null" s16 ${rep} s16 "null" s16 "null" i32 0 i64 0 &
         else
-            echo "{XXX} Duplicate because of mode: chat with yourself, skipping"
+            echo "{XXX} Duplicate message loop, skipping"
         fi
 
 	#save last reply for 
@@ -65,7 +65,7 @@ while true; do
  	#update counter
     	counter=$new_counter
 
-	#remove this line if you wnant to use it with other GSM clients other then yourself 
+	#remove this line if you want to use it with other GSM clients other then yourself safely
 	counter=$((counter+1))
 
 	echo "{...} Waiting for new incoming messages"
